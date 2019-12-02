@@ -3,8 +3,8 @@
 ## Project Functionalities
 
 ## Tech Stack
-### Back-End Tech Stack
+### Back-End
 
-### Front-End Tech Stack
+### Front-End
 
 ## Running Environment
