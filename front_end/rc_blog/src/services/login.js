@@ -1,9 +1,9 @@
 import axios from 'axios'
 
-export const loginRequest = (url, params) => {
+export const loginRequest = (url, {payload}) => {
   return axios({
     method: 'post',
     url: url,
-    data: params,
+    data: "password=12334&username=djfkrkr",
   });
 }

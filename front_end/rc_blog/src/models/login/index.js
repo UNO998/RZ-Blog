@@ -1,10 +1,10 @@
 import {loginAction} from './sagas'
 import {LOGIN} from './actions'
-import { takeLatest } from 'redux-saga/effects';
+import { takeEvery } from 'redux-saga/effects';
 
 const model = {
   * loginAsync() {
-    yield takeLatest(LOGIN, loginAction)
+    yield takeEvery(LOGIN, loginAction)
   }
 }
 
