@@ -24,26 +24,26 @@ import java.io.PrintWriter;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private final String ADMIN_ROLE = "ADMIN";
-	private final String USER_ROLE = "USER";
-
     // should be put as the content of front-end login form 'action' attribute
     private final String PROCESSING_URL = "/login";
 
+    // for internal usage
+    private final String ADMIN_ROLE = "ADMIN";
+    private final String USER_ROLE = "USER";
     private final String LOGIN_PAGE = "/login_page";
     private final String USERNAME_PARAM = "username";
     private final String PASSWORD_PARAM = "password";
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication()
-				.withUser("yiran").password("yiran").roles(ADMIN_ROLE)
-				.and()
-				.withUser("jingye").password("jingye").roles(ADMIN_ROLE)
-				.and()
-				.withUser("haotao").password("haotao").roles(ADMIN_ROLE)
-				.and()
-				.withUser("user").password("12345").roles(USER_ROLE);
+        auth.inMemoryAuthentication()
+                .withUser("yiran").password("{noop}yiran").roles(ADMIN_ROLE)
+                .and()
+                .withUser("jingye").password("{noop}jingye").roles(ADMIN_ROLE)
+                .and()
+                .withUser("haotao").password("{noop}haotao").roles(ADMIN_ROLE)
+                .and()
+                .withUser("user").password("{noop}12345").roles(USER_ROLE);
     }
 
     @Override
@@ -92,10 +92,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         ;
     }
 
+    /* disable password encoder for now
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    */
 
     @Bean
     public AccessDeniedHandler getAccessDeniedHandler() {
