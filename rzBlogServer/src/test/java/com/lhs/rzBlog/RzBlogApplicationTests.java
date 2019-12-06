@@ -11,6 +11,7 @@ public class RzBlogApplicationTests {
 
 	@Test
 	public void contextLoads() {
+
 	}
 
 }

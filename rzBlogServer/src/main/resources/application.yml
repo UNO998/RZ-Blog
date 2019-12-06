@@ -2,3 +2,33 @@ server:
   port: 8081
   servlet:
     context-path: "/api/"
+
+mybatis:
+  config-location: classpath:/mybatis-config.xml
+  mapper-locations: classpath:mapper/*.xml
+
+spring:
+  datasource:
+
+    # H2
+#    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:file:~/halo-dev/db/halo
+#    username: admin
+#    password: 123456
+
+    # MySql
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql:///vueblog2?useUnicode=true&characterEncoding=UTF-8
+    username: h_lai
+    password: haotao
+
+
+
+# Spring Security Configuration
+ss:
+
+  # using in memory data for authentication
+#  auth-datasource: "IN_MEMORY"
+
+  # using database for authentication, default setting
+  auth-datasource: "DATABASE"

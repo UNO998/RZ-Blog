@@ -1,6 +1,10 @@
 package com.lhs.rzBlog.config;
 
 import com.lhs.rzBlog.common.JsonResponse;
+import com.lhs.rzBlog.service.UserService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -8,42 +12,49 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.util.Objects;
 
 /**
- * Created by Yiran
+ * Created by Yiran Shen, Haotao Lai
  * 12/03/2019
  */
 
 @Configuration
 @EnableWebSecurity
+@Slf4j
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     // should be put as the content of front-end login form 'action' attribute
     private final String PROCESSING_URL = "/login";
 
     // for internal usage
-    private final String ADMIN_ROLE = "ADMIN";
-    private final String USER_ROLE = "USER";
-    private final String LOGIN_PAGE = "/login_page";
-    private final String USERNAME_PARAM = "username";
-    private final String PASSWORD_PARAM = "password";
+    private final static String ADMIN_ROLE = "ADMIN";
+    private final static String USER_ROLE = "USER";
+    private final static String LOGIN_PAGE = "/login_page";
+    private final static String USERNAME_PARAM = "username";
+    private final static String PASSWORD_PARAM = "password";
+    private final static String IM_MEMORY_DS = "IN_MEMORY";
+
+    @Value("${ss.auth-datasource}")
+    private String authDataSource;
+
+    @Autowired
+    UserService userService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("yiran").password("{noop}yiran").roles(ADMIN_ROLE)
-                .and()
-                .withUser("jingye").password("{noop}jingye").roles(ADMIN_ROLE)
-                .and()
-                .withUser("haotao").password("{noop}haotao").roles(ADMIN_ROLE)
-                .and()
-                .withUser("user").password("{noop}12345").roles(USER_ROLE);
+        log.info("using data from {} for authentication", authDataSource);
+        ConfigStrategy configer;
+        if (Objects.equals(authDataSource, IM_MEMORY_DS)) {
+            configer = new InMemoryStrategy();
+        } else {
+            configer = new DatabaseStrategy();
+        }
+        configer.config(auth);
     }
 
     @Override
@@ -109,5 +120,36 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 out.flush();
             }
         };
+    }
+
+
+    private interface ConfigStrategy {
+        void config(AuthenticationManagerBuilder builder) throws Exception;
+    }
+
+    private static class InMemoryStrategy implements ConfigStrategy {
+
+        @Override
+        public void config(AuthenticationManagerBuilder auth) throws Exception {
+            auth.inMemoryAuthentication()
+                    .withUser("yiran").password("{noop}yiran").roles(ADMIN_ROLE)
+                    .and()
+                    .withUser("jingye").password("{noop}jingye").roles(ADMIN_ROLE)
+                    .and()
+                    .withUser("haotao").password("{noop}haotao").roles(ADMIN_ROLE)
+                    .and()
+                    .withUser("user").password("{noop}12345").roles(USER_ROLE);
+        }
+    }
+
+    private class DatabaseStrategy implements ConfigStrategy {
+
+//        @Autowired
+//        UserService userService;
+
+        @Override
+        public void config(AuthenticationManagerBuilder auth) throws Exception {
+            auth.userDetailsService(userService);
+        }
     }
 }
