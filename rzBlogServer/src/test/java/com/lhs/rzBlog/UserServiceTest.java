@@ -27,7 +27,7 @@ public class UserServiceTest {
     @Test
     public void loadUserByUsernameTest() {
         String expectedPassword = "202cb962ac59075b964b07152d234b70";
-        UserDetails user = userService.loadUserByUsername("qiaofeng");
+        UserDetails user = userService.loadUserByUsername("fengqingyang");
         String actualPassword = user.getPassword();
         Assert.assertEquals(expectedPassword, actualPassword);
     }

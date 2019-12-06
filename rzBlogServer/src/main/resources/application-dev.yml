@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql:///vueblog2?useUnicode=true&characterEncoding=UTF-8
+      username: h_lai
+      password: haotao

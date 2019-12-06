@@ -37,24 +37,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final static String LOGIN_PAGE = "/login_page";
     private final static String USERNAME_PARAM = "username";
     private final static String PASSWORD_PARAM = "password";
-    private final static String IM_MEMORY_DS = "IN_MEMORY";
-
-    @Value("${ss.auth-datasource}")
-    private String authDataSource;
 
     @Autowired
     UserService userService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        log.info("using data from {} for authentication", authDataSource);
-        ConfigStrategy configer;
-        if (Objects.equals(authDataSource, IM_MEMORY_DS)) {
-            configer = new InMemoryStrategy();
-        } else {
-            configer = new DatabaseStrategy();
-        }
-        configer.config(auth);
+        auth.userDetailsService(userService);
+//        log.info("using data from {} for authentication", authDataSource);
+//        ConfigStrategy configer;
+//        if (Objects.equals(authDataSource, IM_MEMORY_DS)) {
+//            configer = new InMemoryStrategy();
+//        } else {
+//            configer = new DatabaseStrategy();
+//        }
+//        configer.config(auth);
     }
 
     @Override
@@ -122,7 +119,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         };
     }
 
-
+/*
     private interface ConfigStrategy {
         void config(AuthenticationManagerBuilder builder) throws Exception;
     }
@@ -152,4 +149,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             auth.userDetailsService(userService);
         }
     }
+
+ */
 }
