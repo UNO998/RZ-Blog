@@ -1,9 +1,10 @@
 import axios from 'axios'
 
-export const loginRequest = (url, params) => {
-  return axios({
-    method: 'post',
-    url: url,
-    data: params,
-  });
-}
+var config = {
+  headers: {
+      'Content-Type': 'text/plain'
+  },
+ responseType: 'text'
+};
+
+export const loginRequest = (url, {payload}) => axios.post(url, payload, config)
