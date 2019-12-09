@@ -43,3 +43,13 @@ INSERT INTO `roles_user` VALUES ('124', '3', '13');
 INSERT INTO `roles_user` VALUES ('128', '2', '10');
 INSERT INTO `roles_user` VALUES ('129', '5', '10');
 INSERT INTO `roles_user` VALUES ('130', '1', '16');
+
+-- ----------------------------
+-- Records of category
+-- ----------------------------
+INSERT INTO `category` VALUES ('56', 'Vue22', '2017-12-21');
+INSERT INTO `category` VALUES ('58', 'ControlLife', '2017-12-21');
+INSERT INTO `category` VALUES ('60', 'JavaEE', '2017-12-21');
+INSERT INTO `category` VALUES ('61', 'Git', '2017-12-21');
+INSERT INTO `category` VALUES ('62', 'Linux', '2017-12-21');
+INSERT INTO `category` VALUES ('64', 'MongoDB', '2017-12-23');
