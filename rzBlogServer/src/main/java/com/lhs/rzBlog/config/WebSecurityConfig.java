@@ -1,22 +1,33 @@
 package com.lhs.rzBlog.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lhs.rzBlog.common.JsonResponse;
 import com.lhs.rzBlog.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.Objects;
+import java.util.Map;
 
 /**
  * Created by Yiran Shen, Haotao Lai
@@ -44,51 +55,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService);
-//        log.info("using data from {} for authentication", authDataSource);
-//        ConfigStrategy configer;
-//        if (Objects.equals(authDataSource, IM_MEMORY_DS)) {
-//            configer = new InMemoryStrategy();
-//        } else {
-//            configer = new DatabaseStrategy();
-//        }
-//        configer.config(auth);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.addFilterAt(jsonInputUserAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.authorizeRequests()
                 .antMatchers("/admin/category/all").authenticated()
                 .antMatchers("/admin/**", "/reg").hasRole(ADMIN_ROLE)
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                    .usernameParameter(USERNAME_PARAM)
-                    .passwordParameter(PASSWORD_PARAM)
                     .loginPage(LOGIN_PAGE)
                     .loginProcessingUrl(PROCESSING_URL)
                     .permitAll()
-                    .successHandler((req, res, err) -> {
-                        JsonResponse tmp = new JsonResponse()
-                                .code(HttpStatus.OK.value())
-                                .message("login successfully");
-
-                        res.setContentType("application/json;charset=utf-8");
-                        try(PrintWriter out = res.getWriter()) {
-                            out.write(tmp.json());
-                            out.flush();
-                        }
-                    })
-                    .failureHandler((req, res, err) -> {
-                        JsonResponse tmp = new JsonResponse()
-                                .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                                .message("fail to login");
-
-                        res.setContentType("application/json;charset=utf-8");
-                        try(PrintWriter out = res.getWriter()) {
-                            out.write(tmp.json());
-                            out.flush();
-                        }
-                    })
                 .and()
                     .logout()
                     .permitAll()
@@ -100,55 +80,85 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         ;
     }
 
-    /* disable password encoder for now
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new MessageDigestPasswordEncoder("MD5");
     }
-    */
+
 
     @Bean
     public AccessDeniedHandler getAccessDeniedHandler() {
         return (req, res, err) -> {
             res.setStatus(HttpServletResponse.SC_FORBIDDEN);
             res.setCharacterEncoding("UTF-8");
-            try(PrintWriter out = res.getWriter()) {
+            try (PrintWriter out = res.getWriter()) {
                 out.write("You don't have authorization to do so, please contact the administrator.");
                 out.flush();
             }
         };
     }
 
-/*
-    private interface ConfigStrategy {
-        void config(AuthenticationManagerBuilder builder) throws Exception;
+    @Bean
+    public JsonInputUserAuthenticationFilter jsonInputUserAuthenticationFilter() throws Exception {
+        JsonInputUserAuthenticationFilter filter = new JsonInputUserAuthenticationFilter();
+        filter.setAuthenticationSuccessHandler((req, res, err) -> {
+            JsonResponse tmp = new JsonResponse()
+                    .code(HttpStatus.OK.value())
+                    .message("login successfully");
+
+            res.setContentType("application/json;charset=utf-8");
+            try (PrintWriter out = res.getWriter()) {
+                out.write(tmp.json());
+                out.flush();
+            }
+        });
+        filter.setAuthenticationFailureHandler((req, res, err) -> {
+            JsonResponse tmp = new JsonResponse()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("fail to login");
+
+            res.setContentType("application/json;charset=utf-8");
+            try (PrintWriter out = res.getWriter()) {
+                out.write(tmp.json());
+                out.flush();
+            }
+        });
+
+        filter.setAuthenticationManager(authenticationManager());
+        return filter;
     }
 
-    private static class InMemoryStrategy implements ConfigStrategy {
+    public static class JsonInputUserAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         @Override
-        public void config(AuthenticationManagerBuilder auth) throws Exception {
-            auth.inMemoryAuthentication()
-                    .withUser("yiran").password("{noop}yiran").roles(ADMIN_ROLE)
-                    .and()
-                    .withUser("jingye").password("{noop}jingye").roles(ADMIN_ROLE)
-                    .and()
-                    .withUser("haotao").password("{noop}haotao").roles(ADMIN_ROLE)
-                    .and()
-                    .withUser("user").password("{noop}12345").roles(USER_ROLE);
+        public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+            if (!request.getMethod().equals("POST")) {
+                throw new AuthenticationServiceException(
+                        "Authentication method not supported: " + request.getMethod());
+            }
+
+            if (request.getContentType().equals(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                    || request.getContentType().equals(MediaType.APPLICATION_JSON_VALUE)) {
+                ObjectMapper mapper = new ObjectMapper();
+                UsernamePasswordAuthenticationToken authRequest = null;
+                try (InputStream is = request.getInputStream()) {
+                    Map<String, String> authenticationBean = mapper.readValue(is, Map.class);
+                    authRequest = new UsernamePasswordAuthenticationToken(
+                            authenticationBean.get(USERNAME_PARAM), authenticationBean.get(PASSWORD_PARAM));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    authRequest = new UsernamePasswordAuthenticationToken(
+                            "", "");
+                } finally {
+                    setDetails(request, authRequest);
+                    return this.getAuthenticationManager().authenticate(authRequest);
+                }
+            } else {
+                return super.attemptAuthentication(request, response);
+            }
         }
+
+
     }
 
-    private class DatabaseStrategy implements ConfigStrategy {
-
-//        @Autowired
-//        UserService userService;
-
-        @Override
-        public void config(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(userService);
-        }
-    }
-
- */
 }

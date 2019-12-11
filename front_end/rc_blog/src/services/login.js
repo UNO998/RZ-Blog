@@ -2,7 +2,7 @@ import axios from 'axios'
 
 var config = {
   headers: {
-      'Content-Type': 'text/plain'
+      'Content-Type': 'application/json'
   },
  responseType: 'text'
 };
