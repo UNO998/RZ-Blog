@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lhs.rzBlog.mapper.TagMapper">
+    
+    <insert id="saveTags">
+    	INSERT INTO tags(tagName) VALUES
+    	<foreach collection="tags" item="tag" separator=",">
+    		(#{tag})
+    	</foreach>
+    </insert>
+    
+    <select id="getTagsByTagNames" resultType="long">
+    	SELECT id FROM tags WHERE tagName IN
+    	<foreach collection="tagNames" separator="," open="(" close=")" item="tagName">
+    		#{tagName}
+    	</foreach>
+    </select>
+    
+</mapper>

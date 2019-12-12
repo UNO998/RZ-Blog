@@ -53,3 +53,39 @@ INSERT INTO `category` VALUES ('60', 'JavaEE', '2017-12-21');
 INSERT INTO `category` VALUES ('61', 'Git', '2017-12-21');
 INSERT INTO `category` VALUES ('62', 'Linux', '2017-12-21');
 INSERT INTO `category` VALUES ('64', 'MongoDB', '2017-12-23');
+
+-- ----------------------------
+-- Records of tags
+-- ----------------------------
+INSERT INTO `tags` VALUES ('66', '666');
+INSERT INTO `tags` VALUES ('35', 'Ajax');
+INSERT INTO `tags` VALUES ('36', 'Dubbo');
+INSERT INTO `tags` VALUES ('40', 'git');
+INSERT INTO `tags` VALUES ('33', 'Linux');
+INSERT INTO `tags` VALUES ('45', 'mongodb');
+INSERT INTO `tags` VALUES ('42', 'spring');
+INSERT INTO `tags` VALUES ('44', 'SpringSecurity');
+INSERT INTO `tags` VALUES ('37', 'websocket');
+INSERT INTO `tags` VALUES ('34', 'Zookeeper');
+INSERT INTO `tags` VALUES ('50', 'Unix');
+INSERT INTO `tags` VALUES ('51', 'Ubuntu');
+INSERT INTO `tags` VALUES ('41', 'Mac');
+INSERT INTO `tags` VALUES ('65', 'Windowns');
+
+---- ----------------------------
+---- Records of article_tags
+---- ----------------------------
+--INSERT INTO `article_tags` VALUES ('26', '116', '42');
+--INSERT INTO `article_tags` VALUES ('27', '116', '44');
+--INSERT INTO `article_tags` VALUES ('28', '116', '35');
+--INSERT INTO `article_tags` VALUES ('29', '118', '45');
+--INSERT INTO `article_tags` VALUES ('32', '119', '40');
+--INSERT INTO `article_tags` VALUES ('33', '119', '41');
+--INSERT INTO `article_tags` VALUES ('36', '109', '35');
+--INSERT INTO `article_tags` VALUES ('37', '109', '50');
+--INSERT INTO `article_tags` VALUES ('38', '109', '51');
+--INSERT INTO `article_tags` VALUES ('39', '110', '36');
+--INSERT INTO `article_tags` VALUES ('48', '108', '33');
+--INSERT INTO `article_tags` VALUES ('49', '108', '34');
+--INSERT INTO `article_tags` VALUES ('50', '120', '66');
+--INSERT INTO `article_tags` VALUES ('51', '120', '65');
