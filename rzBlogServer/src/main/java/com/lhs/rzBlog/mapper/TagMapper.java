@@ -14,6 +14,8 @@ public interface TagMapper {
 	
 	int deleteTagsByAid(Long aid);
 	
+	int deleteTagsByTid(Long tid);
+	
 	int saveTags(@Param("tags") String[] tags);
 	
 	List<Long> getTagsByTagNames(@Param("tagNames") String[] tagNames);

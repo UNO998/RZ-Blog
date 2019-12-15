@@ -63,4 +63,46 @@ public class TagMapperTest {
 		Assert.assertEquals(num, 3);
 	}
 
+	@Test
+	public void testTagMapper() {
+		/*
+		 * Add Tags to tags table
+		 * Function: saveTags()
+		 */
+		String[] tags = {"Youtube", "FaceBook"};
+		Long aid = 121L;
+		Assert.assertEquals(mapper.saveTags(tags), 2);
+		
+		/*
+		 * Get tags by TagsNames
+		 * Function: getTagsByTagNames()
+		 */
+		List<Long> tagsId = mapper.getTagsByTagNames(tags);
+		Assert.assertEquals(tagsId.size(), 2);
+		
+		/*
+		 * Add tags article relationship in article_tags table
+		 * Function: saveTagsToArticleTags()
+		 */
+		Assert.assertEquals(
+				mapper.saveTagsToArticleTags(tagsId, aid), 2);
+		/*
+		 * Delete tags article relationship in article_tags table
+		 * Function: deleteTagsByAid()
+		 */	
+		Assert.assertEquals(
+				mapper.deleteTagsByAid(aid), 2);
+		
+		/*
+		 * Delete tags from tags table
+		 * Function: deleteTagsByTid()
+		 */
+		for (Long id : tagsId) {
+			Assert.assertEquals(
+					mapper.deleteTagsByTid(id), 1);
+		}
+		
+		
+	}
+
 }

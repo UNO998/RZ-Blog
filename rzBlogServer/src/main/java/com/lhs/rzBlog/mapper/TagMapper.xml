@@ -8,6 +8,10 @@
     	DELETE FROM article_tags WHERE aid=#{aid}
     </delete>
     
+    <delete id="deleteTagsByTid">
+    	DELETE FROM tags WHERE id=#{tid}
+    </delete>
+    
     <insert id="saveTags">
     	INSERT INTO tags(tagName) VALUES
     	<foreach collection="tags" item="tag" separator=",">
