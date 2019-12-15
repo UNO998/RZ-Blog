@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS=0;
+
 -- ----------------------------
 -- Table structure for roles
 -- ----------------------------
@@ -85,19 +87,64 @@ CREATE TABLE `article` (
   CONSTRAINT `article_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
 );
 
----- ----------------------------
----- Table structure for article_tags
----- ----------------------------
---DROP TABLE IF EXISTS `article_tags`;
---CREATE TABLE `article_tags` (
---  `id` int(11) NOT NULL AUTO_INCREMENT,
---  `aid` int(11) DEFAULT NULL,
---  `tid` int(11) DEFAULT NULL,
---  PRIMARY KEY (`id`),
+-- ----------------------------
+-- Table structure for article_tags
+-- ----------------------------
+DROP TABLE IF EXISTS `article_tags`;
+CREATE TABLE `article_tags` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `aid` int(11) DEFAULT NULL,
+  `tid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
 --  KEY `tid` (`tid`),
---  KEY `article_tags_ibfk_1` (`aid`),
---  CONSTRAINT `article_tags_ibfk_1` FOREIGN KEY (`aid`) REFERENCES `article` (`id`) ON DELETE CASCADE,
---  CONSTRAINT `article_tags_ibfk_2` FOREIGN KEY (`tid`) REFERENCES `tags` (`id`)
---);
+  KEY `article_tags_ibfk_1` (`aid`),
+  CONSTRAINT `article_tags_ibfk_1` FOREIGN KEY (`aid`) REFERENCES `article` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `article_tags_ibfk_2` FOREIGN KEY (`tid`) REFERENCES `tags` (`id`)
+);
 
+-- ----------------------------
+-- Table structure for comments
+-- ----------------------------
+DROP TABLE IF EXISTS `comments`;
+CREATE TABLE `comments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `aid` int(11) DEFAULT NULL,
+  `content` text,
+  `publishDate` datetime DEFAULT NULL,
+  `parentId` int(11) DEFAULT NULL COMMENT '-1表示正常回复，其他值表示是评论的回复',
+  `uid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `aid` (`aid`),
+--  KEY `uid` (`uid`),
+  KEY `parentId` (`parentId`),
+  CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`aid`) REFERENCES `article` (`id`),
+  CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `user` (`id`),
+  CONSTRAINT `comments_ibfk_3` FOREIGN KEY (`parentId`) REFERENCES `comments` (`id`)
+);
 
+-- ----------------------------
+-- Table structure for pv
+-- ----------------------------
+DROP TABLE IF EXISTS `pv`;
+CREATE TABLE `pv` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `countDate` date DEFAULT NULL,
+  `pv` int(11) DEFAULT NULL,
+  `uid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `pv_ibfk_1` (`uid`),
+  CONSTRAINT `pv_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`id`) ON DELETE CASCADE
+);
+
+---- ----------------------------
+---- View structure for pvview
+---- ----------------------------
+--DROP VIEW IF EXISTS `pvview`;
+--CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost`  VIEW `pvview` AS select sum(pv) as pv,uid from pv group by uid ;
+--
+---- ----------------------------
+---- View structure for totalpvview
+---- ----------------------------
+--DROP VIEW IF EXISTS `totalpvview`;
+--CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost`  VIEW `totalpvview` AS select sum(pageView) as totalPv,uid from article a group by uid ;
+--SET FOREIGN_KEY_CHECKS=1;
