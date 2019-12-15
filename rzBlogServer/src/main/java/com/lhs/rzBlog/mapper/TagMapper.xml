@@ -4,6 +4,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lhs.rzBlog.mapper.TagMapper">
     
+    <delete id="deleteTagsByAid">
+    	DELETE FROM article_tags WHERE aid=#{aid}
+    </delete>
+    
     <insert id="saveTags">
     	INSERT INTO tags(tagName) VALUES
     	<foreach collection="tags" item="tag" separator=",">

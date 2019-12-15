@@ -11,6 +11,9 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface TagMapper {
+	
+	int deleteTagsByAid(Long aid);
+	
 	int saveTags(@Param("tags") String[] tags);
 	
 	List<Long> getTagsByTagNames(@Param("tagNames") String[] tagNames);

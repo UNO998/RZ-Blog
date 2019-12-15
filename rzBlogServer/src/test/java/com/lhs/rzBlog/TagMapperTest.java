@@ -38,5 +38,14 @@ public class TagMapperTest {
 		
 		Assert.assertEquals(tagsList.size(), 2);
 	}
+	
+	@Test public void testDeleteTagsByAid() {
+		Long aid = 116L;
+		
+		int delete = mapper.deleteTagsByAid(aid);
+		
+		Assert.assertEquals(delete, 3);
+		
+	}
 
 }
