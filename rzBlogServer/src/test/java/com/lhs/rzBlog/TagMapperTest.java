@@ -1,5 +1,6 @@
 package com.lhs.rzBlog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -39,13 +40,27 @@ public class TagMapperTest {
 		Assert.assertEquals(tagsList.size(), 2);
 	}
 	
-	@Test public void testDeleteTagsByAid() {
+	@Test 
+	public void testDeleteTagsByAid() {
 		Long aid = 116L;
 		
 		int delete = mapper.deleteTagsByAid(aid);
 		
 		Assert.assertEquals(delete, 3);
+	}
+	
+	@Test
+	public void testSaveTagsToArticleTags() {
+		List<Long> tagIds = new ArrayList<>();
+		tagIds.add(35L);
+		tagIds.add(66L);
+		tagIds.add(36L);
 		
+		Long aid = 121L;
+		
+		int num = mapper.saveTagsToArticleTags(tagIds, aid);
+		
+		Assert.assertEquals(num, 3);
 	}
 
 }

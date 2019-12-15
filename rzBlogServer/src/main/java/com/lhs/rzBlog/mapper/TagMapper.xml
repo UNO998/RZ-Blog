@@ -22,4 +22,11 @@
     	</foreach>
     </select>
     
+    <insert id="saveTagsToArticleTags">
+    	INSERT INTO article_tags(aid, tid) VALUES
+    	<foreach collection="tagIds" item="tagId" separator=",">
+    		(#{aid}, #{tagId})
+    	</foreach>
+    </insert>
+    
 </mapper>
