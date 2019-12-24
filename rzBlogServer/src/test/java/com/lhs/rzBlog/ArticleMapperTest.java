@@ -91,5 +91,22 @@ public class ArticleMapperTest {
 		Long[] aids = {110L};
 		Assert.assertEquals(1, mapper.updateArticleState(aids, 2));
 	}
+	
+	@Test
+	public void testUpdateArticleStateById() {
+		Assert.assertEquals(1, mapper.updateArticleStateById(110L, 1));
+	}
+	
+	@Test
+	public void testDeleteArticleById() {
+		Long[] aids = {113L};
+		Assert.assertEquals(1, mapper.deleteArticleById(aids));
+	}
+	
+	@Test 
+	public void testGetArticleById() {
+		Article article = mapper.getArticleById(116L);
+		Assert.assertEquals("SpringBoot+SpringSecurity处理Ajax登录请求", article.getTitle());
+	}
 
 }

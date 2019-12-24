@@ -26,4 +26,18 @@ public interface ArticleMapper {
 	
 	int updateArticleState(@Param("aids") Long aids[], @Param("state") Integer state);
 	
+    int updateArticleStateById(@Param("articleId") Long articleId, @Param("state") Integer state);
+
+    int deleteArticleById(@Param("aids") Long[] aids);
+
+    Article getArticleById(Long aid);
+
+    void pvIncrement(Long aid);
+
+    //INSERT INTO pv(countDate,pv,uid) SELECT NOW(),SUM(pageView),uid FROM article GROUP BY uid
+    void pvStatisticsPerDay();
+
+    List<String> getCategories(Long uid);
+
+    List<Integer> getDataStatistics(Long uid);
 }
