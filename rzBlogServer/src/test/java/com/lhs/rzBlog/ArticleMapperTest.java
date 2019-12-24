@@ -1,7 +1,7 @@
 package com.lhs.rzBlog;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class ArticleMapperTest {
 	@Test
 	public void testUpdateArticle() {
 		Article article = Article.builder()
-										.id(108L)
+										.id(111L)
 										.title("test")
 										.mdContent("testMdContent")
 										.htmlContent("testHtmlContent")
@@ -63,6 +63,33 @@ public class ArticleMapperTest {
 										.stateStr("testSateStr")
 										.build();
 		Assert.assertEquals(1, mapper.updateArticle(article));
+	}
+	
+	@Test
+	public void testGetArticleByState() {
+		List<Article> articleList = mapper.getArticleByState(1, 1, 2, 7L, "学习资料");
+		
+		for (Article a : articleList) {
+			System.out.println(a);
+		}
+		
+		Assert.assertEquals(1, articleList.size());
+	}
+	
+	@Test
+	public void testGetArticleCountByState() {
+		Integer state = 1;
+		Long uid = 6L;
+		String keywords = "Linux ";
+		int articleCount = mapper.getArticleCountByState(state, uid, keywords);
+		
+		Assert.assertEquals(1, articleCount);
+	}
+	
+	@Test
+	public void testUpdateArticleState() {
+		Long[] aids = {110L};
+		Assert.assertEquals(1, mapper.updateArticleState(aids, 2));
 	}
 
 }

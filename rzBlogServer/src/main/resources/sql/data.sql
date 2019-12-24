@@ -75,7 +75,7 @@ INSERT INTO `tags` VALUES ('65', 'Windowns');
 -- ----------------------------
 -- Records of article
 -- ----------------------------
-INSERT INTO `article` VALUES ('108', 'Linux中安装zookeeper', '最近打算出一个系列，介绍Dubbo的使用。', 'htmlConent', 'summary', '60', '6', '2017-12-24 09:34:29', '2017-12-24 09:34:29', '1', '5');
+INSERT INTO `article` VALUES ('108', 'Linux install zookeeper', '最近打算出一个系列，介绍Dubbo的使用。', 'htmlConent', 'summary', '60', '6', '2017-12-24 09:34:29', '2017-12-24 09:34:29', '1', '5');
 INSERT INTO `article` VALUES ('109', 'Ajax上传图片以及上传之前先预览', '手头上有几个小项目用到了easyUI，', 'htmlConent', 'summary','56', '6', '2017-12-24 09:35:06', '2017-12-24 09:35:06', '1', '0');
 INSERT INTO `article` VALUES ('110', '一个简单的案例带你入门Dubbo分布式框架666', '相信有很多小伙伴都知道，dubbo是一个分布式、', 'htmlConent', 'summary','60', '6', '2017-12-21 22:33:31', '2017-12-21 22:33:31', '1', '0');
 INSERT INTO `article` VALUES ('111', 'WebSocket刨根问底(一)', '年初的时候，写过两篇博客介绍在Spring Boot中如何使用WebSocket', 'htmlConent', 'summary','60', '6', '2017-12-21 22:34:02', '2017-12-21 22:34:02', '2', '0');
